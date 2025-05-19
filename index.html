@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品投票系统</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .entry {
+            background-color: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .entry h3 {
+            margin-top: 0;
+            color: #444;
+        }
+        .view-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4285f4;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .view-link:hover {
+            background-color: #3367d6;
+        }
+        .vote-btn {
+            padding: 8px 20px;
+            background-color: #34a853;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .vote-btn:hover {
+            background-color: #2d9248;
+        }
+        #results {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .thank-you {
+            text-align: center;
+            color: #34a853;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>请为您喜欢的作品投票</h1>
+    
+    <div id="votingSection">
+        <div class="entry" id="work1">
+            <h3>作品1: 健康生活指南</h3>
+            点击查看作品：https://v4pre.h5sys.cn/play/BANByLBi
+            <p>本作品聚焦健康话题，涵盖饮食与作息两大方面。饮食部分强调均衡适度，介绍营养搭配及实用小贴士。作息部分阐述科学作息的重要性，提供健康作息时间表。通过图文、互动等形式，引导用户养成良好习惯，解锁身心平衡，拥抱健康生活。</p >
+            <button class="vote-btn" onclick="vote(1)">投票给此作品</button>
+        </div>
+        
+        <div class="entry" id="work2">
+            <h3>作品2: 拒绝容貌焦虑</h3>
+            点击查看作品：https://v4pre.h5sys.cn/play/T98dOPcE
+            <p>使用D3.js创建的交互式数据可视化项目，展示了复杂数据的清晰呈现方式。</p >
+            <button class="vote-btn" onclick="vote(2)">投票给此作品</button>
+        </div>
+        
+        <div class="entry" id="work3">
+            <h3>作品3: 移动应用原型</h3>
+            
+            <p>一个健身追踪应用的完整原型，包含用户流程和UI设计。</p >
+            <button class="vote-btn" onclick="vote(3)">投票给此作品</button>
+        </div>
+        
+        <div class="entry" id="work4">
+            <h3>作品4: 3D艺术画廊</h3>
+            
+            <p>使用Three.js创建的3D虚拟艺术画廊，可以在线浏览艺术作品。</p >
+            <button class="vote-btn" onclick="vote(4)">投票给此作品</button>
+        </div>
+        
+        <div class="entry" id="work5">
+            <h3>作品5: 电子商务网站</h3>
+            
+            <p>一个完整的电子商务平台，包含产品展示、购物车和结账功能。</p >
+            <button class="vote-btn" onclick="vote(5)">投票给此作品</button>
+        </div>
+        
+        <div class="entry" id="work6">
+            <h3>作品6: 互动游戏</h3>
+            
+            <p>使用HTML5 Canvas开发的浏览器游戏，具有精美的图形和流畅的动画。</p >
+            <button class="vote-btn" onclick="vote(6)">投票给此作品</button>
+        </div>
+    </div>
+    
+    <div id="results">
+        <h2>当前投票结果</h2>
+        <div id="resultsContent"></div>
+    </div>
+    
+    <div class="thank-you" id="thankYou">
+        感谢您的投票！
+    </div>
+    
+    <script>
+        // 初始化投票数据
+        let votes = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0
+        };
+        
+        // 检查是否已经投票
+        let hasVoted = localStorage.getItem('hasVoted');
+        
+        if (hasVoted) {
+            document.getElementById('votingSection').style.display = 'none';
+            document.getElementById('thankYou').style.display = 'block';
+            showResults();
+        }
+        
+        // 投票函数
+        function vote(workId) {
+            if (hasVoted) {
+                alert('您已经投过票了！');
+                return;
+            }
+            
+            votes[workId]++;
+            localStorage.setItem('votes', JSON.stringify(votes));
+            localStorage.setItem('hasVoted', 'true');
+            
+            document.getElementById('votingSection').style.display = 'none';
+            document.getElementById('thankYou').style.display = 'block';
+            showResults();
+        }
+        
+        // 显示结果
+        function showResults() {
+            const savedVotes = localStorage.getItem('votes');
+            if (savedVotes) {
+                votes = JSON.parse(savedVotes);
+            }
+            
+            let resultsHTML = '<ul>';
+            for (let i = 1; i <= 6; i++) {
+                resultsHTML += `<li>作品${i}: ${votes[i]}票</li>`;
+            }
+            resultsHTML += '</ul>';
+            
+            document.getElementById('resultsContent').innerHTML = resultsHTML;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        // 管理员查看结果（可以在控制台调用）
+        function adminViewResults() {
+            showResults();
+            document.getElementById('votingSection').style.display = 'block';
+            document.getElementById('thankYou').style.display = 'none';
+            localStorage.removeItem('hasVoted');
+        }
+    </script>
+</body>
+</html>
